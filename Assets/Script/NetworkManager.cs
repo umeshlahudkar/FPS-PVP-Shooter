@@ -35,7 +35,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     [Header("Username Input Screen")]
     public GameObject nameInputScreen;
     public TMP_InputField playerNameInputField;
-    private static bool hasNameSet;
+
+    public static bool hasNameSet = false;
 
     public string levelToPlay;
 
@@ -71,21 +72,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         CloseMenus();
-        menuButtons.SetActive(true);
-
         if (!hasNameSet)
         {
-            CloseMenus();
             nameInputScreen.SetActive(true);
-
-            if(PlayerPrefs.HasKey("playerName"))
-            {
-                playerNameInputField.text = PlayerPrefs.GetString("playerName");
-            }
         }
         else
         {
-            PhotonNetwork.NickName = PlayerPrefs.GetString("playerName");
+            menuButtons.SetActive(true);
         }
     }
 
@@ -290,8 +283,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if(!string.IsNullOrEmpty(playerNameInputField.text))
         {
             PhotonNetwork.NickName = playerNameInputField.text;
-
-            PlayerPrefs.SetString("playerName", playerNameInputField.text);
 
             CloseMenus();
             menuButtons.SetActive(true);

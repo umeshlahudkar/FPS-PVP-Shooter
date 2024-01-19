@@ -24,10 +24,7 @@ public class MatchManager : MonoBehaviourPunCallbacks, IOnEventCallback
     private float currentMatchTime;
     private float sendTimer = 0.0166f;
 
-
     private float waitAfterEnding = 5f;
-    private bool perpetual;
-    private int killsToWin = 3;
 
     public GameState gameState = GameState.Waiting;
     [SerializeField] private Transform mapCameraPoint;
@@ -72,7 +69,6 @@ public class MatchManager : MonoBehaviourPunCallbacks, IOnEventCallback
                     gameState = GameState.Ending;
 
                     ListPlayersSendEvent();
-                    StateCheck();
                 }
 
                 UIController.Instance.UpdateTimerDisplay(currentMatchTime);
@@ -242,9 +238,10 @@ public class MatchManager : MonoBehaviourPunCallbacks, IOnEventCallback
                 break;
             }
         }
-         ScoreCheck();
+         //ScoreCheck();
     }
 
+    /*
     public void ScoreCheck()
     {
         bool winnerFound = false;
@@ -267,6 +264,7 @@ public class MatchManager : MonoBehaviourPunCallbacks, IOnEventCallback
             }
         }
     }
+    */
 
     public void StateCheck()
     {
@@ -300,18 +298,8 @@ public class MatchManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         yield return new WaitForSeconds(waitAfterEnding);
 
-        if (!perpetual)
-        {
-            PhotonNetwork.AutomaticallySyncScene = false;
-            PhotonNetwork.LeaveRoom();
-        }
-        else
-        {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                NextMatchSendEvent();
-            }
-        }
+        PhotonNetwork.AutomaticallySyncScene = false;
+        PhotonNetwork.LeaveRoom();
     }
 
     public override void OnLeftRoom()
