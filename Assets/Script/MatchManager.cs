@@ -20,7 +20,7 @@ public class MatchManager : MonoBehaviourPunCallbacks, IOnEventCallback
     private List<PlayerInfo> allPlayersInfo = new List<PlayerInfo>();
     private int index;
 
-    private float matchTime = 180f;
+    private float matchTime = 20f;
     private float currentMatchTime;
     private float sendTimer = 0.0166f;
 
@@ -298,8 +298,16 @@ public class MatchManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         yield return new WaitForSeconds(waitAfterEnding);
 
-        PhotonNetwork.AutomaticallySyncScene = false;
-        PhotonNetwork.LeaveRoom();
+        if (PhotonNetwork.IsConnected && PhotonNetwork.NetworkClientState == ClientState.Joined)
+        {
+            PhotonNetwork.AutomaticallySyncScene = false;
+            PhotonNetwork.LeaveRoom();
+        }
+        else
+        {
+            yield return new WaitForSeconds(1f);
+            StartCoroutine(EndCo());
+        }
     }
 
     public override void OnLeftRoom()
@@ -356,7 +364,7 @@ public class MatchManager : MonoBehaviourPunCallbacks, IOnEventCallback
         PhotonNetwork.RaiseEvent(
            (byte)EventCodes.TimerSync,
            package,
-           new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient },
+           new RaiseEventOptions { Receivers = ReceiverGroup.All },
            new SendOptions { Reliability = true }
            );
     }
