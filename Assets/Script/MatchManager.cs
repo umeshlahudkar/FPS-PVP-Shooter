@@ -20,7 +20,7 @@ public class MatchManager : MonoBehaviourPunCallbacks, IOnEventCallback
     private List<PlayerInfo> allPlayersInfo = new List<PlayerInfo>();
     private int index;
 
-    private float matchTime = 20f;
+    private float matchTime = 60f;
     private float currentMatchTime;
     private float sendTimer = 0.0166f;
 
@@ -322,6 +322,11 @@ public class MatchManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         base.OnLeftRoom();
 
+        SceneManager.LoadScene(0);
+    }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
         SceneManager.LoadScene(0);
     }
 

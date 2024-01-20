@@ -143,6 +143,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
     }
 
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        CloseMenus();
+
+        loadingScreen.SetActive(true);
+        loadingText.text = "Connecting To Network...";
+    }
+
 
 
 
