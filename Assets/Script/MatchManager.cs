@@ -43,12 +43,20 @@ public class MatchManager : MonoBehaviourPunCallbacks, IOnEventCallback
         }
         else
         {
-            NewPlayerSendEvent(PhotonNetwork.NickName);
-            gameState = GameState.Playing;
-            SetUpTimer();
+            StartCoroutine(Connect());
         }
+    }
 
-        if(!PhotonNetwork.IsMasterClient)
+    private IEnumerator Connect()
+    {
+        while(!PhotonNetwork.InRoom) { yield return null; }
+
+        playerSpawner.SpawnPlayer();
+        NewPlayerSendEvent(PhotonNetwork.NickName);
+        gameState = GameState.Playing;
+        SetUpTimer();
+
+        if (!PhotonNetwork.IsMasterClient)
         {
             UIController.Instance.ToggleTimerText(false);
         }

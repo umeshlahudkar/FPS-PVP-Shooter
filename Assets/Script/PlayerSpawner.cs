@@ -13,14 +13,6 @@ public class PlayerSpawner : MonoBehaviour
 
     private PlayerController player;
 
-    private void Start()
-    {
-        if(PhotonNetwork.IsConnected)
-        {
-            SpawnPlayer();
-        }
-    }
-
     public void SpawnPlayer()
     {
         Transform spawnPoint = SpawnManager.Instance.GetSpawnPoint();
