@@ -21,7 +21,7 @@ public class MatchManager : MonoBehaviourPunCallbacks, IOnEventCallback
     private int index;
 
     private float matchTime = 60f;
-    private float currentMatchTime;
+    private float currentMatchTime = 0;
     private float sendTimer = 0.0166f;
 
     private float waitAfterEnding = 5f;
@@ -64,7 +64,27 @@ public class MatchManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
     private void Update()
     {
-        if(PhotonNetwork.IsMasterClient)
+        if(currentMatchTime >=0 && matchTime > 0 && gameState == GameState.Playing)
+        {
+            currentMatchTime -= Time.deltaTime;
+
+            if (currentMatchTime <= 0)
+            {
+                currentMatchTime = 0f;
+               
+            }
+
+            UIController.Instance.UpdateTimerDisplay(currentMatchTime);
+        }
+
+        if(PhotonNetwork.IsMasterClient && gameState == GameState.Playing && currentMatchTime <= 0)
+        {
+            gameState = GameState.Ending;
+            ListPlayersSendEvent();
+        }
+
+        /*
+        if (PhotonNetwork.IsMasterClient)
         {
             if (matchTime > 0 && gameState == GameState.Playing)
             {
@@ -90,7 +110,7 @@ public class MatchManager : MonoBehaviourPunCallbacks, IOnEventCallback
                 }
             }
         }
-       
+       */
     }
 
     public void OnEvent(EventData photonEvent)
@@ -149,6 +169,8 @@ public class MatchManager : MonoBehaviourPunCallbacks, IOnEventCallback
         allPlayersInfo.Add(info);
 
         ListPlayersSendEvent();
+
+        TimerSendEvent();
     }
 
     public void ListPlayersSendEvent()

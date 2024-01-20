@@ -4,9 +4,7 @@ using Photon.Pun;
 
 public class InternetChecker : Singleton<InternetChecker>
 {
-    private bool isConnectedToInternet = false;
     private WaitForSeconds waitforSeconds;
-
 
     private void Start()
     {
@@ -20,15 +18,10 @@ public class InternetChecker : Singleton<InternetChecker>
         {
             if(Application.internetReachability != NetworkReachability.NotReachable)
             {
-                isConnectedToInternet = true;
                 if (!PhotonNetwork.IsConnected)
                 {
                     PhotonNetwork.ConnectUsingSettings();
                 }
-            }
-            else
-            {
-                isConnectedToInternet = false;
             }
 
             yield return waitforSeconds;
